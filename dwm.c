@@ -308,12 +308,12 @@ struct Monitor {
 	Monitor *next;
 	Window barwin;
 	const Layout *lt[2];
- 	int curtag;
- 	int prevtag;
- 	const Layout *lts[LENGTH(tags) + 1];
- 	float mfacts[LENGTH(tags) + 1];
- 	int nmasters[LENGTH(tags) + 1];
- 	Bool showbars[LENGTH(tags) + 1];
+	int curtag;
+	int prevtag;
+	const Layout *lts[LENGTH(tags) + 1];
+	float mfacts[LENGTH(tags) + 1];
+	int nmasters[LENGTH(tags) + 1];
+	Bool showbars[LENGTH(tags) + 1];
 };
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
@@ -341,6 +341,7 @@ applyrules(Client *c) {
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
 			c->isfloating = r->isfloating;
+			c->preservecwd = r->preservecwd;
 			c->tags |= r->tags;
 			for(m = mons; m && m->num != r->monitor; m = m->next);
 			if(m)
