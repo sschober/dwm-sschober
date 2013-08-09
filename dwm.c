@@ -111,7 +111,7 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
 	int bw, oldbw;
 	unsigned int tags;
-	Bool isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
+	Bool isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, preservecwd;
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -136,6 +136,7 @@ typedef struct {
 	const char *title;
 	unsigned int tags;
 	Bool isfloating;
+	Bool preservecwd;
 	int monitor;
 } Rule;
 
@@ -1815,7 +1816,9 @@ spawn_cwd(const Arg *arg) {
 	if(fork() == 0) {
 		if(dpy)
 			close(ConnectionNumber(dpy));
-		chdir_to_cwd();
+		// only preserve cwd for marked clients
+		if(selmon->sel && selmon->sel->preservecwd)
+		  chdir_to_cwd();
 		setsid();
 		execvp(((char **)arg->v)[0], (char **)arg->v);
 		fprintf(stderr, "dwm: execvp %s", ((char **)arg->v)[0]);
